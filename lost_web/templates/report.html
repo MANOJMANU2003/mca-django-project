@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Item</title>
+{% load static %}
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#f5f7fa; color:#fff; }
+  header { background:#0d1b2a; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+  nav a, nav button { margin:0 12px; font-size:17px; color:#fff; text-decoration:none; }
+  .btn { padding:8px 14px; border:none; border-radius:6px; cursor:pointer; font-size:14px; }
+  .btn-primary { background:#007bff; color:#fff; }
+  .btn-primary:hover { background:#0056b3; }
+  main { max-width:600px; margin:120px auto 50px; background:#0d1b2a; padding:30px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2); }
+  main h2 { text-align:center; margin-bottom:20px; }
+  label { display:block; margin:15px 0 5px; font-size:14px; }
+  input, select, textarea { width:100%; padding:8px; border-radius:6px; border:none; margin-bottom:10px; }
+  .errors { background:#7a1f1f; padding:10px; border-radius:6px; margin-bottom:10px; }
+  .success { background:#1f7a1f; padding:10px; border-radius:6px; margin-bottom:10px; }
+  .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #1e293b;
+      min-width: 120px;
+      border-radius: 6px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: #fff;
+      padding: 10px 14px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #334155;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+</style>
+</head>
+<body>
+<header>
+   <img src="{% static 'logo.png' %}" alt="Logo" style="height:60px;">
+   <nav>
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'report' %}">Report Item</a>
+      <a href="{% url 'listings' %}">Listings</a>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+
+      <div class="dropdown">
+        <button class="dropdown-btn">⋮</button>
+        <div class="dropdown-content">
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
+      </div>
+   </nav>
+</header>
+
+<main>
+  <h2>Report Lost/Found Item</h2>
+
+  <form method="post" action="{% url 'report' %}">
+    {% csrf_token %}
+    <label for="type">Report Type</label>
+    <select id="type" name="type">
+      <option>Lost</option>
+      <option>Found</option>
+    </select>
+
+    <label for="name">Item Name</label>
+    <input type="text" id="name" name="name" placeholder="Enter item name">
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" placeholder="Enter details"></textarea>
+
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location" placeholder="Enter location">
+
+    <label for="date">Date</label>
+    <input type="date" id="date" name="date">
+
+    <button type="submit" class="btn btn-primary">Submit Report</button>
+  </form>
+</main>
+</body>
+</html>

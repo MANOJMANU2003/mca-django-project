@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#f5f7fa; color:#fff; }
+  header { background:#0d1b2a; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+  nav a, nav button { margin:0 12px; font-size:17px; color:#fff; text-decoration:none; }
+  .btn { padding:8px 14px; border:none; border-radius:6px; cursor:pointer; font-size:14px; }
+  .btn-primary { background:#007bff; color:#fff; }
+  main { max-width:1000px; margin:120px auto 50px; }
+  .stats { display:flex; justify-content:space-around; flex-wrap:wrap; gap:20px; }
+  .stat-box { background:#0d1b2a; padding:20px; border-radius:10px; text-align:center; width:200px; box-shadow:0 4px 8px rgba(0,0,0,0.2); }
+  .stat-box h3 { font-size:40px; margin-bottom:10px; color:#fff; }
+  .stat-box p { font-size:16px; color:#ccc; margin:0; }
+
+  .dropdown { position: relative; display: inline-block; }
+  .dropdown-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #1e293b;
+    min-width: 120px;
+    border-radius: 6px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    z-index: 1;
+  }
+  .dropdown-content a { color: #fff; padding: 10px 14px; text-decoration: none; display: block; }
+  .dropdown-content a:hover { background-color: #334155; }
+  .dropdown:hover .dropdown-content { display: block; }
+
+  /* New section for items */
+  .items-section { margin-top:50px; }
+  .item-card {
+    background:#0d1b2a;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    width:250px;
+    text-align:center;
+  }
+  .item-container {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+  }
+  .delete-btn {
+    background:#e11d48;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:8px 12px;
+    margin-top:10px;
+    cursor:pointer;
+  }
+  .delete-btn:hover { background:#be123c; }
+</style>
+</head>
+<body>
+<header>
+  <img src="{% static 'logo.png' %}" alt="Logo" style="height:60px;">
+  <nav>
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'report' %}">Report Item</a>
+    <a href="{% url 'listings' %}">View Listings</a>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+
+    <div class="dropdown">
+      <button class="dropdown-btn">⋮</button>
+      <div class="dropdown-content">
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}">Login</a>
+          <a href="{% url 'signup' %}">Sign up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <h2 style="text-align:center; margin-bottom:30px; color: black;">Dashboard Overview</h2>
+
+  <div class="stats">
+    <div class="stat-box">
+      <h3>{{ lost_count }}</h3>
+      <p>Lost Items</p>
+    </div>
+    <div class="stat-box">
+      <h3>{{ found_count }}</h3>
+      <p>Found Items</p>
+    </div>
+    <div class="stat-box">
+      <h3>{{ users_count }}</h3>
+      <p>Users</p>
+    </div>
+    <div class="stat-box">
+      <h3>{{ pending_count }}</h3>
+      <p>Pending Reports</p>
+    </div>
+  </div>
+
+  <!-- New section for deleting items -->
+  <section class="items-section">
+    <h2 style="text-align:center; margin-bottom:25px; color:black;">Manage Reported Items</h2>
+
+    <div class="item-container">
+      {% for item in items %}
+        <div class="item-card">
+          <h4 style="color:white;">{{ item.name }}</h4>
+          <p style="color:#ccc;">{{ item.description }}</p>
+          <form method="post" action="{% url 'delete_item' item.id %}">
+            {% csrf_token %}
+            <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+          </form>
+        </div>
+      {% empty %}
+        <p style="color:black;">No items available.</p>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+</body>
+</html>

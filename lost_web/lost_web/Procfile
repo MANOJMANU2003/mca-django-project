@@ -1,0 +1,1 @@
+web: gunicorn lost_web.wsgi
